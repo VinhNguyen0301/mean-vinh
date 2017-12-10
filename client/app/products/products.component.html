@@ -1,0 +1,101 @@
+<app-loading [condition]="isLoading"></app-loading>
+
+<app-toast [message]="toast.message"></app-toast>
+
+<table>
+  <tr *ngFor="let category of categories">
+    <td>{{category.name}}</td>
+  </tr> 
+</table>
+
+<div class="card" *ngIf="!isLoading && !isDetail">
+  <h4 class="card-header">Current products ({{products.length}})</h4>
+  <div class="card-block">
+    <table class="table table-bordered table-striped">
+      <thead class="thead-default">
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Image</th>
+          <th>Category</th>
+          <th *ngIf="auth.loggedIn">Actions</th>
+          <th>Detail Product</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="products.length === 0">
+        <tr>
+          <td colspan="4">There are no products in the DB. Add a new product below.</td>
+        </tr>  
+      </tbody>
+      <tbody *ngIf="!isEditing">
+        <tr *ngFor="let product of products">
+          <td>{{product.name}}</td>
+          <td>{{product.price}}</td>
+          <td>{{product.image}}</td>
+          <td>{{product.category_name}}</td>
+          <td *ngIf="auth.loggedIn">
+            <button class="btn btn-sm btn-warning" (click)="enableEditing(product)"><i class="fa fa-pencil"></i> Edit</button> 
+            <button class="btn btn-sm btn-danger" (click)="deleteProduct(product)"><i class="fa fa-trash"></i> Delete</button>
+          </td>
+          <td>
+            <a class="btn btn-sm btn-warning" routerLink="/detail/{{product._id}}"><i class="fa fa-pencil"></i> Detail</a> 
+          </td>
+        </tr>  
+      </tbody>
+      <tbody *ngIf="isEditing">
+        <tr>
+          <td colspan="4">
+            <form class="form-inline" #form="ngForm" (ngSubmit)="editProduct(product)" style="display:inline">
+              <div class="form-group">
+                <input class="form-control" type="text" name="name" [(ngModel)]="product.name" placeholder="Name" required>
+              </div>
+              <div class="form-group">
+                <input class="form-control" type="number" name="price" [(ngModel)]="product.price" placeholder="Price" min="0" required>
+              </div>
+              <div class="form-group">
+                <input class="form-control" type="text" name="image" [(ngModel)]="product.image" placeholder="Image" step="any" min="0" required>
+              </div>
+              <div class="input-group">
+                <select class="form-control" name="category_name" [(ngModel)]="product.category_name">
+                  <option value="" selected disabled>Select Category</option>
+                  <option *ngFor="let category of categories">
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+              <button class="btn btn-sm btn-primary" type="submit" [disabled]="!form.form.valid"><i class="fa fa-floppy-o"></i> Save</button>
+            </form>
+            <button class="btn btn-sm btn-warning" (click)="cancelEditing()"><i class="fa fa-times"></i> Cancel</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card" *ngIf="!isEditing && auth.loggedIn">
+  <h4 class="card-header">Add new product</h4>
+  <div class="card-block">
+    <form class="form-inline" [formGroup]="addProductForm" (ngSubmit)="addProduct()" style="text-align:center">
+      <div class="form-group">
+        <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name">
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="number" name="price" formControlName="price" placeholder="Price" min="0">
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="text" name="image" formControlName="image" placeholder="Image" step="any" min="0">
+      </div>
+      <div class="input-group">
+        <select class="form-control" name="category_name" formControlName="category_name">
+          <option value="" selected disabled>Select Category</option>
+          <option *ngFor="let category of categories">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="!addProductForm.valid"><i class="fa fa-floppy-o"></i> Add</button>
+    </form>
+  </div>
+</div>
+

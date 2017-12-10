@@ -1,0 +1,13 @@
+<app-toast [message]="toast.message"></app-toast>
+
+<h1>Cart</h1>
+<table>
+  <tr *ngFor="let product of products">
+    <td>{{product.name}}</td>
+    <td>{{product.price}}</td>
+    <td>{{product.image}}</td>
+    <td>
+      <button class="btn btn-sm btn-primary" (click)="removeProduct(product)"><i class="fa fa-trash"></i> Remove</button>
+    </td>
+  </tr>  
+</table>

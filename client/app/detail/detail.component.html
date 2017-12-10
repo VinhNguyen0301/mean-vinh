@@ -1,0 +1,15 @@
+<app-toast [message]="toast.message"></app-toast>
+
+<h1>Detail page</h1>
+<table>
+  <tr>
+    <th>Name</th>
+    <td>{{ product.name }}</td>
+  </tr>
+  <tr>
+    <th>Add to cart</th>
+    <td>
+      <button class="btn btn-sm btn-primary" (click)="addToCart(product)">Add to cart</button> 
+    </td>
+  </tr>
+</table>

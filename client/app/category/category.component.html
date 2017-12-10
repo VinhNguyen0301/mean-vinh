@@ -1,0 +1,57 @@
+<app-loading [condition]="isLoading"></app-loading>
+
+<app-toast [message]="toast.message"></app-toast>
+
+<div class="card" *ngIf="!isLoading && !isDetail">
+  <h4 class="card-header">Current category ({{categories.length}})</h4>
+  <div class="card-block">
+    <table class="table table-bordered table-striped">
+      <thead class="thead-default">
+        <tr>
+          <th>Name</th>
+          <th *ngIf="auth.loggedIn">Actions</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="category.length === 0">
+        <tr>
+          <td colspan="4">There are no category in the DB. Add a new category below.</td>
+        </tr>  
+      </tbody>
+      <tbody *ngIf="!isEditing">
+        <tr *ngFor="let category of categories">
+          <td>{{category.name}}</td>
+          <td *ngIf="auth.loggedIn">
+            <button class="btn btn-sm btn-warning" (click)="enableEditing(category)"><i class="fa fa-pencil"></i> Edit</button> 
+            <button class="btn btn-sm btn-danger" (click)="deleteCategory(category)"><i class="fa fa-trash"></i> Delete</button>
+          </td>
+        </tr>  
+      </tbody>
+      <tbody *ngIf="isEditing">
+        <tr>
+          <td colspan="4">
+            <form class="form-inline" #form="ngForm" (ngSubmit)="editCategory(category)" style="display:inline">
+              <div class="form-group">
+                <input class="form-control" type="text" name="name" [(ngModel)]="category.name" placeholder="Name" required>
+              </div>
+              <button class="btn btn-sm btn-primary" type="submit" [disabled]="!form.form.valid"><i class="fa fa-floppy-o"></i> Save</button>
+            </form>
+            <button class="btn btn-sm btn-warning" (click)="cancelEditing()"><i class="fa fa-times"></i> Cancel</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card" *ngIf="!isEditing && auth.loggedIn">
+  <h4 class="card-header">Add new category</h4>
+  <div class="card-block">
+    <form class="form-inline" [formGroup]="addCategoryForm" (ngSubmit)="addCategory()" style="text-align:center">
+      <div class="form-group">
+        <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name">
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="!addCategoryForm.valid"><i class="fa fa-floppy-o"></i> Add</button>
+    </form>
+  </div>
+</div>
+
